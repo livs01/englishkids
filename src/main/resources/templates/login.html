@@ -1,0 +1,75 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Entrar')}"></head>
+<body class="login-page">
+
+<a th:replace="~{fragments/layout :: skip}"></a>
+
+<header class="site-header">
+    <div class="container header-inner">
+        <p class="brand"><span aria-hidden="true">🌈</span> English Kids</p>
+    </div>
+</header>
+
+<main id="conteudo" tabindex="-1" class="container login-main">
+
+    <section class="login-card" aria-labelledby="titulo-login">
+
+        <div class="login-illustration" aria-hidden="true">
+            <span>🌈</span>
+            <span>⭐</span>
+            <span>📚</span>
+        </div>
+
+        <p class="login-eyebrow">SEU MUNDO DE DESCOBERTAS</p>
+
+        <h1 id="titulo-login">Vamos aprender? 🎈</h1>
+
+        <p class="login-description">
+            Entre na sua conta e continue sua aventura no inglês!
+        </p>
+
+        <div th:if="${param.error}" class="alert alert-error" role="alert">
+            Usuário ou senha inválidos. Verifique os dados e tente novamente.
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-success" role="status">
+            Você saiu do sistema com sucesso.
+        </div>
+
+        <form th:action="@{/login}" method="post" class="form login-form">
+
+            <div class="form-group">
+                <label for="username">👤 Usuário</label>
+                <input type="text" id="username" name="username"
+                       placeholder="Digite seu usuário"
+                       required autocomplete="username" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">🔒 Senha</label>
+                <input type="password" id="password" name="password"
+                       placeholder="Digite sua senha"
+                       required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary login-button">
+                Entrar 🚀
+            </button>
+
+        </form>
+
+        <div class="login-footer">
+            <span aria-hidden="true">💜</span>
+            Cada dia é uma nova oportunidade de aprender!
+        </div>
+
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

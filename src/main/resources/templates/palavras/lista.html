@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Palavras')}"></head>
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container palavras-page">
+
+    <section class="palavras-hero">
+        <div class="palavras-hero-texto">
+            <span class="palavras-etiqueta">🔤 HORA DE DESCOBRIR!</span>
+            <h1>Um mundo de palavras!</h1>
+            <p>Descubra palavras em inglês, conheça seus significados e pratique sua pronúncia.</p>
+            <div class="palavras-destaques">
+                <span>📖 Novas palavras</span>
+                <span>🔊 Ouça e aprenda</span>
+            </div>
+        </div>
+        <div class="palavras-hero-emoji" aria-hidden="true">📚✨</div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <section class="palavras-painel">
+        <div class="palavras-cabecalho">
+            <div>
+                <span class="palavras-subtitulo">EXPLORE O VOCABULÁRIO</span>
+                <h2>Vamos aprender?</h2>
+                <p>Pesquise uma palavra ou encontre seu próximo aprendizado.</p>
+            </div>
+            <a sec:authorize="hasRole('ADMIN')"
+               class="btn btn-primary"
+               th:href="@{/palavras/novo}">＋ Nova palavra</a>
+        </div>
+
+        <form role="search" th:action="@{/palavras}" method="get"
+              class="palavras-busca">
+            <label for="q">Buscar por palavra, tradução ou tema</label>
+            <div class="palavras-busca-linha">
+                <input type="search" id="q" name="q"
+                       th:value="${q}" maxlength="100"
+                       placeholder="Ex.: dog, cachorro, animals...">
+                <button type="submit" class="btn btn-primary">🔎 Buscar</button>
+                <a th:if="${!q.isEmpty()}" class="btn btn-outline"
+                   th:href="@{/palavras}">Limpar</a>
+            </div>
+        </form>
+
+        <p role="status" class="palavras-resultado"
+           th:text="${pagina.totalElements} + ' palavra(s) encontrada(s).'">
+            0 palavra(s) encontrada(s).
+        </p>
+
+        <div class="palavras-tabela-wrap" th:if="${!pagina.isEmpty()}">
+            <table class="palavras-tabela">
+                <caption class="visually-hidden">Lista de palavras de vocabulário</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Inglês</th>
+                    <th scope="col">Português</th>
+                    <th scope="col">Pronúncia</th>
+                    <th scope="col">Tema</th>
+                    <th scope="col">Nível</th>
+                    <th scope="col">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${pagina.content}">
+                    <th scope="row" data-label="Inglês">
+                        <span class="palavras-emoji" aria-hidden="true"
+                              th:text="${p.emoji()}">🐶</span>
+                        <span lang="en" th:text="${p.ingles()}">Dog</span>
+                    </th>
+                    <td data-label="Português" th:text="${p.portugues()}">Cachorro</td>
+                    <td data-label="Pronúncia">
+                        <span th:if="${p.pronuncia() != null}"
+                              th:text="${p.pronuncia()}">dóg</span>
+                        <span th:if="${p.pronuncia() == null}" class="palavras-sem-dado">—</span>
+                    </td>
+                    <td data-label="Tema">
+                        <span class="palavras-tema" lang="en"
+                              th:text="${p.temaNomeIngles()}">Animals</span>
+                    </td>
+                    <td data-label="Nível">
+                        <span class="palavras-nivel" th:text="${p.nivel().rotulo}">Iniciante</span>
+                    </td>
+                    <td data-label="Ações" class="palavras-acoes">
+                        <button type="button" class="btn btn-small btn-ouvir"
+                                th:attr="data-falar=${p.ingles()}, aria-label=${'Ouvir a palavra ' + p.ingles() + ' em inglês'}">
+                            🔊 Ouvir
+                        </button>
+                        <a sec:authorize="hasRole('ADMIN')"
+                           class="btn btn-small btn-editar"
+                           th:href="@{/palavras/{id}/editar(id=${p.id()})}"
+                           th:attr="aria-label=${'Editar a palavra ' + p.ingles()}">✏️ Editar</a>
+                        <a sec:authorize="hasRole('ADMIN')"
+                           class="btn btn-small btn-excluir"
+                           th:href="@{/palavras/{id}/excluir(id=${p.id()})}"
+                           th:attr="aria-label=${'Excluir a palavra ' + p.ingles()}">Excluir</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${pagina.isEmpty()}" class="palavras-vazio">
+            <span aria-hidden="true">🦉</span>
+            <h2>Nenhuma palavra encontrada!</h2>
+            <p>Tente pesquisar outro termo para continuar sua descoberta.</p>
+            <a class="btn btn-primary" th:href="@{/palavras}">Ver todas as palavras</a>
+        </div>
+
+        <nav th:if="${pagina.totalPages > 1}" class="palavras-paginacao"
+             aria-label="Paginação da lista de palavras">
+            <a th:if="${pagina.hasPrevious()}" class="btn btn-outline"
+               th:href="@{/palavras(q=${q},page=${pagina.number - 1})}">« Anterior</a>
+            <span aria-current="page"
+                  th:text="'Página ' + ${pagina.number + 1} + ' de ' + ${pagina.totalPages}">
+                Página 1 de 1
+            </span>
+            <a th:if="${pagina.hasNext()}" class="btn btn-outline"
+               th:href="@{/palavras(q=${q},page=${pagina.number + 1})}">Próxima »</a>
+        </nav>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

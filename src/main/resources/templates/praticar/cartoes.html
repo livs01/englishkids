@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Cartões de estudo')}"></head>
+
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container study-page">
+
+    <p class="back-link">
+        <a th:href="@{/praticar}">← Voltar aos temas</a>
+    </p>
+
+    <section class="study-hero">
+        <span class="study-hero-emoji" aria-hidden="true"
+              th:text="${tema.emoji()}">🐾</span>
+
+        <div>
+            <span class="section-eyebrow">HORA DE APRENDER!</span>
+            <h1>
+                <span lang="en" th:text="${tema.nomeIngles()}">Animals</span>
+                <span class="muted study-translation">
+                    (<span th:text="${tema.nomePortugues()}">Animais</span>)
+                </span>
+            </h1>
+            <p>Descubra palavras novas, revele traduções e pratique sua pronúncia!</p>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <section class="study-toolbar" th:if="${!palavras.isEmpty()}">
+        <div class="study-counter">
+            <span aria-hidden="true">📚</span>
+            <span>
+                <strong id="total-cartoes" th:text="${palavras.size()}">0</strong>
+                palavras para aprender
+            </span>
+        </div>
+
+        <button type="button" class="btn btn-primary"
+                id="alternar-cartoes" aria-expanded="false">
+            👀 Revelar todas
+        </button>
+    </section>
+
+    <p class="study-instruction" th:if="${!palavras.isEmpty()}">
+        Toque em um cartão para descobrir a tradução. Depois, escute a palavra em inglês!
+    </p>
+
+    <section class="empty-study card" th:if="${palavras.isEmpty()}">
+        <span aria-hidden="true">🦉</span>
+        <h2>Novas palavras a caminho!</h2>
+        <p>Este tema ainda não tem palavras cadastradas. Volte mais tarde para continuar aprendendo.</p>
+        <a class="btn btn-primary" th:href="@{/praticar}">Explorar outros temas</a>
+    </section>
+
+    <p id="estado-estudo" class="study-status" role="status"
+       aria-live="polite" th:if="${!palavras.isEmpty()}">
+        Nenhum cartão revelado ainda. Vamos começar?
+    </p>
+
+    <ul class="flashcards study-grid" th:if="${!palavras.isEmpty()}">
+        <li class="flashcard study-card" th:each="p : ${palavras}">
+            <details class="vocab-details">
+                <summary>
+                    <span class="emoji" aria-hidden="true"
+                          th:text="${p.emoji()}">🐶</span>
+
+                    <span class="palavra-en" lang="en"
+                          th:text="${p.ingles()}">Dog</span>
+
+                    <span class="dica">
+                        <span class="dica-fechada">Toque para revelar ↓</span>
+                        <span class="dica-aberta">Tradução revelada ↑</span>
+                    </span>
+                </summary>
+
+                <div class="vocab-answer">
+                    <p class="traducao">
+                        <strong th:text="${p.portugues()}">Cachorro</strong>
+                    </p>
+
+                    <p class="pronuncia-info" th:if="${p.pronuncia() != null}">
+                        <span aria-hidden="true">🗣️</span>
+                        Pronúncia aproximada:
+                        <em th:text="${p.pronuncia()}">dóg</em>
+                    </p>
+
+                    <p th:if="${p.exemplo() != null}"
+                       lang="en" class="exemplo"
+                       th:text="${p.exemplo()}">
+                        The dog is happy.
+                    </p>
+
+                    <span class="badge"
+                          th:text="${p.nivel().rotulo}">Iniciante</span>
+                </div>
+            </details>
+
+            <button type="button"
+                    class="btn btn-outline btn-small audio-button"
+                    th:attr="data-falar=${p.ingles()},
+                    aria-label=${'Ouvir a palavra ' + p.ingles() + ' em inglês'}">
+                <span aria-hidden="true">🔊</span>
+                Ouvir pronúncia
+            </button>
+        </li>
+    </ul>
+
+    <div class="study-bottom" th:if="${!palavras.isEmpty()}">
+        <span aria-hidden="true">🌟</span>
+        <p>Você está indo muito bem! Continue praticando uma palavra de cada vez.</p>
+        <a class="btn btn-primary" th:href="@{/praticar}">
+            Escolher outro tema
+        </a>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script th:src="@{/js/cartoes.js}" defer></script>
+</body>
+</html>

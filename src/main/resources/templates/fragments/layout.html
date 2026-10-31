@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- HEAD comum -->
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | English Kids'">English Kids</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/pronuncia.js}" defer></script>
+</head>
+
+<body>
+
+<!-- Link para pular direto ao conteúdo (leitores de tela e teclado) -->
+<a th:fragment="skip" class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
+
+<!-- CABEÇALHO + NAVEGAÇÃO -->
+<header th:fragment="header" class="site-header">
+    <div class="container header-inner">
+        <p class="brand"><span aria-hidden="true">🌈</span> English Kids</p>
+
+        <nav aria-label="Navegação principal" sec:authorize="isAuthenticated()">
+            <ul class="nav-list">
+                <li><a th:href="@{/}" th:attr="aria-current=${secao == 'inicio' ? 'page' : null}">Início</a></li>
+                <li><a th:href="@{/praticar}" th:attr="aria-current=${secao == 'praticar' ? 'page' : null}">Praticar</a></li>
+                <li><a th:href="@{/palavras}" th:attr="aria-current=${secao == 'palavras' ? 'page' : null}">Palavras</a></li>
+                <li><a th:href="@{/temas}" th:attr="aria-current=${secao == 'temas' ? 'page' : null}">Temas</a></li>
+                <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}" th:attr="aria-current=${secao == 'admin' ? 'page' : null}">Administração</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-box" sec:authorize="isAuthenticated()">
+            <span>Olá, <strong sec:authentication="name">usuário</strong></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-secondary">Sair</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- MENSAGENS FLASH (sucesso / erro) -->
+<div th:fragment="mensagens">
+    <div th:if="${sucesso}" class="alert alert-success" role="status" th:text="${sucesso}"></div>
+    <div th:if="${erro}" class="alert alert-error" role="alert" th:text="${erro}"></div>
+</div>
+
+<!-- RODAPÉ -->
+<footer th:fragment="footer" class="site-footer">
+    <div class="container">
+        <p>Trabalho Prático de Programação WEB &mdash; Spring Boot &middot; UFMS</p>
+    </div>
+</footer>
+
+</body>
+</html>

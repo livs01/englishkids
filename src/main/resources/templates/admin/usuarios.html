@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Usuários')}"></head>
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container">
+    <div class="page-head">
+        <h1>Usuários</h1>
+        <a class="btn btn-primary" th:href="@{/admin/usuarios/novo}">Novo usuário</a>
+    </div>
+
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <div class="table-wrap">
+        <table class="table">
+            <caption class="visually-hidden">Lista de usuários do sistema</caption>
+            <thead>
+            <tr>
+                <th scope="col">Login</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Perfil</th>
+                <th scope="col">Situação</th>
+                <th scope="col">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${usuarios}">
+                <th scope="row" data-label="Login" th:text="${u.username()}">login</th>
+                <td data-label="Nome" th:text="${u.nome()}">Nome</td>
+                <td data-label="Perfil" th:text="${u.perfil().rotulo}">Perfil</td>
+                <td data-label="Situação">
+                    <span class="badge" th:classappend="${u.ativo() ? 'badge-ok' : 'badge-off'}"
+                          th:text="${u.ativo() ? 'Ativo' : 'Inativo'}">Ativo</span>
+                </td>
+                <td data-label="Ações" class="actions">
+                    <span th:if="${u.username() == #authentication.name}" class="muted">Sua conta</span>
+
+                    <form th:unless="${u.username() == #authentication.name}"
+                          th:action="@{/admin/usuarios/{id}/ativo(id=${u.id()})}" method="post">
+                        <button type="submit" class="btn btn-small btn-outline"
+                                th:text="${u.ativo() ? 'Desativar' : 'Ativar'}"
+                                th:attr="aria-label=${(u.ativo() ? 'Desativar ' : 'Ativar ') + u.username()}">Desativar</button>
+                    </form>
+
+                    <form th:unless="${u.username() == #authentication.name}"
+                          th:action="@{/admin/usuarios/{id}/perfil(id=${u.id()})}" method="post">
+                        <input type="hidden" name="perfil" th:value="${u.perfil().name() == 'ADMIN' ? 'USER' : 'ADMIN'}">
+                        <button type="submit" class="btn btn-small btn-outline"
+                                th:text="${u.perfil().name() == 'ADMIN' ? 'Tornar usuário comum' : 'Tornar administrador'}"
+                                th:attr="aria-label=${'Alterar perfil de ' + u.username()}">Alterar perfil</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

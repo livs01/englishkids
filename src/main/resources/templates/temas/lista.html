@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Temas')}"></head>
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container">
+    <div class="page-head">
+        <h1>Temas</h1>
+        <a sec:authorize="hasRole('ADMIN')" class="btn btn-primary" th:href="@{/temas/novo}">Novo tema</a>
+    </div>
+
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <div class="table-wrap" th:if="${!temas.isEmpty()}">
+        <table class="table">
+            <caption class="visually-hidden">Lista de temas de vocabulário</caption>
+            <thead>
+            <tr>
+                <th scope="col">Tema (inglês)</th>
+                <th scope="col">Tema (português)</th>
+                <th scope="col">Descrição</th>
+                <th scope="col" sec:authorize="hasRole('ADMIN')">Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${temas}">
+                <th scope="row" data-label="Tema (inglês)">
+                    <span aria-hidden="true" th:text="${t.emoji()}">🐾</span>
+                    <span lang="en" th:text="${t.nomeIngles()}">Animals</span>
+                </th>
+                <td data-label="Tema (português)" th:text="${t.nomePortugues()}">Animais</td>
+                <td data-label="Descrição" th:text="${t.descricao()}">Descrição</td>
+                <td data-label="Ações" class="actions" sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-small btn-outline" th:href="@{/temas/{id}/editar(id=${t.id()})}"
+                       th:attr="aria-label=${'Editar o tema ' + t.nomeIngles()}">Editar</a>
+                    <a class="btn btn-small btn-danger" th:href="@{/temas/{id}/excluir(id=${t.id()})}"
+                       th:attr="aria-label=${'Excluir o tema ' + t.nomeIngles()}">Excluir</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p th:if="${temas.isEmpty()}" class="card">Nenhum tema cadastrado.</p>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

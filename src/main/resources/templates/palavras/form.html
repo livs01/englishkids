@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head(${itemId == null ? 'Nova palavra' : 'Editar palavra'})}"></head>
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container">
+    <h1 th:text="${itemId == null ? 'Nova palavra' : 'Editar palavra'}">Nova palavra</h1>
+    <p class="muted">Campos marcados com <span aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> são obrigatórios.</p>
+
+    <form class="card form" th:object="${palavraForm}"
+          th:action="${itemId == null} ? @{/palavras} : @{/palavras/{id}(id=${itemId})}" method="post">
+
+        <div th:if="${#fields.hasErrors('*')}" class="alert alert-error" role="alert">
+            <p><strong>Corrija os problemas abaixo:</strong></p>
+            <ul>
+                <li th:each="e : ${#fields.errors('*')}" th:text="${e}">Erro</li>
+            </ul>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="ingles">Palavra em inglês <span aria-hidden="true">*</span></label>
+                <input type="text" th:field="*{ingles}" lang="en" required aria-required="true" maxlength="60"
+                       th:attr="aria-invalid=${#fields.hasErrors('ingles') ? 'true' : null}, aria-describedby=${#fields.hasErrors('ingles') ? 'ingles-erro' : null}">
+                <span id="ingles-erro" class="field-error" th:if="${#fields.hasErrors('ingles')}" th:errors="*{ingles}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="portugues">Tradução em português <span aria-hidden="true">*</span></label>
+                <input type="text" th:field="*{portugues}" required aria-required="true" maxlength="60"
+                       th:attr="aria-invalid=${#fields.hasErrors('portugues') ? 'true' : null}, aria-describedby=${#fields.hasErrors('portugues') ? 'portugues-erro' : null}">
+                <span id="portugues-erro" class="field-error" th:if="${#fields.hasErrors('portugues')}" th:errors="*{portugues}"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="pronuncia">Pronúncia aproximada</label>
+                <input type="text" th:field="*{pronuncia}" maxlength="60"
+                       th:attr="aria-invalid=${#fields.hasErrors('pronuncia') ? 'true' : null}, aria-describedby=${#fields.hasErrors('pronuncia') ? 'pronuncia-ajuda pronuncia-erro' : 'pronuncia-ajuda'}">
+                <small id="pronuncia-ajuda" class="muted">Como se lê em português. Exemplo: dóg</small>
+                <span id="pronuncia-erro" class="field-error" th:if="${#fields.hasErrors('pronuncia')}" th:errors="*{pronuncia}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="emoji">Emoji</label>
+                <input type="text" th:field="*{emoji}" maxlength="16"
+                       th:attr="aria-invalid=${#fields.hasErrors('emoji') ? 'true' : null}, aria-describedby=${#fields.hasErrors('emoji') ? 'emoji-erro' : null}">
+                <span id="emoji-erro" class="field-error" th:if="${#fields.hasErrors('emoji')}" th:errors="*{emoji}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="exemplo">Frase de exemplo (em inglês)</label>
+            <input type="text" th:field="*{exemplo}" lang="en" maxlength="200"
+                   th:attr="aria-invalid=${#fields.hasErrors('exemplo') ? 'true' : null}, aria-describedby=${#fields.hasErrors('exemplo') ? 'exemplo-erro' : null}">
+            <span id="exemplo-erro" class="field-error" th:if="${#fields.hasErrors('exemplo')}" th:errors="*{exemplo}"></span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="temaId">Tema <span aria-hidden="true">*</span></label>
+                <select th:field="*{temaId}" required aria-required="true"
+                        th:attr="aria-invalid=${#fields.hasErrors('temaId') ? 'true' : null}, aria-describedby=${#fields.hasErrors('temaId') ? 'temaId-erro' : null}">
+                    <option value="">Selecione...</option>
+                    <option th:each="t : ${temas}" th:value="${t.id()}"
+                            th:text="${t.nomeIngles() + ' (' + t.nomePortugues() + ')'}">Animals (Animais)</option>
+                </select>
+                <span id="temaId-erro" class="field-error" th:if="${#fields.hasErrors('temaId')}" th:errors="*{temaId}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="nivel">Nível <span aria-hidden="true">*</span></label>
+                <select th:field="*{nivel}" required aria-required="true"
+                        th:attr="aria-invalid=${#fields.hasErrors('nivel') ? 'true' : null}, aria-describedby=${#fields.hasErrors('nivel') ? 'nivel-erro' : null}">
+                    <option th:each="n : ${niveis}" th:value="${n.name()}" th:text="${n.rotulo}">Iniciante</option>
+                </select>
+                <span id="nivel-erro" class="field-error" th:if="${#fields.hasErrors('nivel')}" th:errors="*{nivel}"></span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a class="btn btn-outline" th:href="@{/palavras}">Cancelar</a>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

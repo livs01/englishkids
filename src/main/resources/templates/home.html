@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Início')}"></head>
+
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container home-page">
+
+    <section class="hero hero-home" aria-labelledby="titulo-hero">
+        <div class="hero-decoration" aria-hidden="true">
+            <span>⭐</span>
+            <span>🌈</span>
+            <span>✨</span>
+        </div>
+
+        <div class="hero-content">
+            <span class="hero-label">🎓 Aprender pode ser divertido!</span>
+
+            <h1 id="titulo-hero">
+                Welcome to <span>English Kids!</span>
+            </h1>
+
+            <p>
+                Descubra novas palavras, pratique sua pronúncia
+                e aprenda inglês brincando todos os dias!
+            </p>
+
+            <div class="hero-actions">
+                <a class="btn btn-primary btn-grande"
+                   th:href="@{/praticar}">
+                    Vamos aprender! 🚀
+                </a>
+
+                <a class="btn btn-outline btn-grande"
+                   th:href="@{/temas}">
+                    Explorar temas 📚
+                </a>
+            </div>
+
+            <div class="hero-benefits" aria-label="Recursos de aprendizagem">
+                <span>🧠 Novas palavras</span>
+                <span>🔊 Pronúncia em inglês</span>
+                <span>🎯 Aprendizado divertido</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="welcome-note" aria-labelledby="titulo-boas-vindas">
+        <div class="welcome-note-icon" aria-hidden="true">🦊</div>
+        <div>
+            <h2 id="titulo-boas-vindas">Hello, explorer!</h2>
+            <p>Prepare-se para descobrir o mundo da língua inglesa.
+               Escolha uma atividade e comece sua aventura!</p>
+        </div>
+    </section>
+
+    <section class="access-card" aria-labelledby="titulo-perfil">
+        <div class="access-icon" aria-hidden="true">👋</div>
+        <div>
+            <h2 id="titulo-perfil">Seu espaço de aprendizagem</h2>
+
+            <p sec:authorize="hasRole('ADMIN')">
+                Você está no perfil de <strong>Administrador</strong>.
+                Além de estudar, pode gerenciar temas, palavras e usuários.
+            </p>
+
+            <p sec:authorize="!hasRole('ADMIN')">
+                Você está no perfil de <strong>Usuário Comum</strong>.
+                Explore os conteúdos e pratique inglês no seu ritmo.
+            </p>
+        </div>
+    </section>
+
+    <section class="home-modules" aria-labelledby="titulo-modulos">
+        <div class="section-heading">
+            <span class="section-eyebrow">EXPLORE E APRENDA</span>
+            <h2 id="titulo-modulos">Qual será sua próxima aventura?</h2>
+            <p>Escolha uma opção e comece a aprender!</p>
+        </div>
+
+        <ul class="grid-cards home-grid">
+
+            <li class="card home-card home-card-practice">
+                <span class="home-card-icon" aria-hidden="true">🎮</span>
+                <span class="home-card-tag">Mãos à obra!</span>
+                <h3><a th:href="@{/praticar}">Praticar</a></h3>
+                <p>Estude com cartões, descubra traduções e escute a pronúncia das palavras.</p>
+                <a class="home-card-link" th:href="@{/praticar}">
+                    Começar agora <span aria-hidden="true">→</span>
+                </a>
+            </li>
+
+            <li class="card home-card home-card-words">
+                <span class="home-card-icon" aria-hidden="true">🔤</span>
+                <span class="home-card-tag">Novas descobertas</span>
+                <h3><a th:href="@{/palavras}">Palavras</a></h3>
+                <p>Encontre palavras em inglês, conheça seus significados e amplie seu vocabulário.</p>
+                <a class="home-card-link" th:href="@{/palavras}">
+                    Explorar palavras <span aria-hidden="true">→</span>
+                </a>
+            </li>
+
+            <li class="card home-card home-card-themes">
+                <span class="home-card-icon" aria-hidden="true">🌎</span>
+                <span class="home-card-tag">Explore o mundo</span>
+                <h3><a th:href="@{/temas}">Temas</a></h3>
+                <p>Descubra vocabulário sobre animais, cores, frutas e outros assuntos.</p>
+                <a class="home-card-link" th:href="@{/temas}">
+                    Ver temas <span aria-hidden="true">→</span>
+                </a>
+            </li>
+
+            <li class="card home-card home-card-admin"
+                sec:authorize="hasRole('ADMIN')">
+                <span class="home-card-icon" aria-hidden="true">🛠️</span>
+                <span class="home-card-tag">Área administrativa</span>
+                <h3><a th:href="@{/admin}">Administração</a></h3>
+                <p>Gerencie usuários, perfis e contas da plataforma.</p>
+                <a class="home-card-link" th:href="@{/admin}">
+                    Acessar painel <span aria-hidden="true">→</span>
+                </a>
+            </li>
+
+        </ul>
+    </section>
+
+    <section class="home-challenge" aria-labelledby="titulo-desafio">
+        <div class="challenge-illustration" aria-hidden="true">🦁</div>
+        <div class="challenge-content">
+            <span class="section-eyebrow">SEU DESAFIO</span>
+            <h2 id="titulo-desafio">Ready, set, learn!</h2>
+            <p>Que tal reservar alguns minutos para aprender palavras novas hoje?</p>
+            <a class="btn btn-primary" th:href="@{/praticar}">
+                Aceitar o desafio ✨
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

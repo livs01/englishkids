@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Praticar')}"></head>
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container praticar-page">
+
+    <section class="praticar-hero">
+        <div class="praticar-hero-texto">
+            <span class="praticar-etiqueta">🌟 APRENDA BRINCANDO</span>
+            <h1>Vamos praticar inglês?</h1>
+            <p>Escolha uma aventura, descubra palavras novas e divirta-se aprendendo inglês!</p>
+            <div class="praticar-destaques">
+                <span>🎧 Escute</span>
+                <span>📚 Aprenda</span>
+                <span>⭐ Divirta-se</span>
+            </div>
+        </div>
+        <div class="praticar-ilustracao" aria-hidden="true">🦊📚</div>
+        <span class="praticar-estrela estrela-um" aria-hidden="true">✦</span>
+        <span class="praticar-estrela estrela-dois" aria-hidden="true">✧</span>
+    </section>
+
+    <section class="praticar-conteudo">
+        <div class="praticar-titulo">
+            <span class="praticar-subtitulo">ESCOLHA SUA AVENTURA</span>
+            <h2>O que vamos aprender hoje?</h2>
+            <p>Cada tema é uma nova descoberta!</p>
+        </div>
+
+        <div th:if="${temas.isEmpty()}" class="praticar-vazio">
+            <span aria-hidden="true">🦉</span>
+            <h2>Novas aventuras estão chegando!</h2>
+            <p>Ainda não há temas cadastrados. Volte em breve para descobrir novas palavras.</p>
+        </div>
+
+        <ul class="praticar-grid" th:if="${!temas.isEmpty()}">
+            <li class="praticar-card"
+                th:each="t, stat : ${temas}"
+                th:classappend="${stat.index % 5 == 0 ? ' tema-amarelo' : (stat.index % 5 == 1 ? ' tema-azul' : (stat.index % 5 == 2 ? ' tema-rosa' : (stat.index % 5 == 3 ? ' tema-verde' : ' tema-laranja')))}">
+
+                <div class="praticar-card-topo">
+                    <span class="praticar-card-emoji" aria-hidden="true"
+                          th:text="${t.emoji()}">🐾</span>
+                    <span class="praticar-card-numero"
+                          th:text="${'AVENTURA ' + (stat.index + 1)}">AVENTURA 1</span>
+                </div>
+
+                <div class="praticar-card-corpo">
+                    <h3>
+                        <a th:href="@{/praticar/{id}(id=${t.id()})}">
+                            <span lang="en" th:text="${t.nomeIngles()}">Animals</span>
+                        </a>
+                    </h3>
+
+                    <p class="praticar-traducao"
+                       th:text="${t.nomePortugues()}">Animais</p>
+
+                    <p class="praticar-descricao"
+                       th:text="${t.descricao()}">Descubra novas palavras.</p>
+
+                    <a class="praticar-link"
+                       th:href="@{/praticar/{id}(id=${t.id()})}">
+                        Começar a aprender <span aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

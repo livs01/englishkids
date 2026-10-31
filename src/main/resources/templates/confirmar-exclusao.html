@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head(${tituloPagina})}"></head>
+<body>
+<a th:replace="~{fragments/layout :: skip}"></a>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main id="conteudo" tabindex="-1" class="container">
+    <section class="card card-narrow" aria-labelledby="titulo-exclusao">
+        <h1 id="titulo-exclusao" th:text="${tituloPagina}">Excluir</h1>
+        <p th:text="${mensagem}">Deseja realmente excluir?</p>
+        <p class="muted">Esta ação não poderá ser desfeita.</p>
+        <form th:action="@{${acao}}" method="post" class="actions">
+            <button type="submit" class="btn btn-danger">Sim, excluir</button>
+            <a class="btn btn-outline" th:href="@{${voltar}}">Cancelar</a>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
